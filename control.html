@@ -1,0 +1,37 @@
+<html dir="ltr"><head>
+        <title>OpenLP Lyrics Control</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="control.css">
+        <script type="text/javascript" src="/files/jquery.min.js"></script>
+        <script type="text/javascript" src="control.js"></script>
+    </head>
+    <body>
+        <div class="options">
+            <div>
+                <div>Tampilan Teks</div>
+                <input type="radio" id="original" name="mode-tampilan" value="original">
+                <label for="original">Original</label>
+                <input type="radio" id="2-line" name="mode-tampilan" value="2-line">
+                <label for="2-line">Maks 2 baris</label>
+            </div>
+        </div>
+        
+        <div class="live-container">
+            Live
+            <div id="live"></div>
+        </div>
+        
+        <div class="controls-container">
+            <div class="service">
+                <div class="title">Service</div>
+                <div id="service-list"></div>
+            </div>
+
+            <div class="text">
+                <div class="title">Text</div>
+                <div id="text-list"></div>
+            </div>
+            </div>
+        </div>
+    </body></html>
