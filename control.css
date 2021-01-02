@@ -1,5 +1,5 @@
 body {
-    padding:8px;
+    padding: 0;
     background-color: #3a393a;
     font-family: sans-serif;
     font-size: 9pt;
@@ -24,6 +24,7 @@ body {
 .controls-container {
     display: flex;
     flex-direction: row;
+    height: calc(100% - 120px);
 }
 
 .service, .text {

@@ -7,7 +7,7 @@ window.OpenLP = {
             data.results.items.forEach( (item, i) => {
                 var { id, title, selected } = item;
                 var $item = $(`<div class="service-item${selected ? " selected" : ""}"/>`);
-                $item.text(title)
+                $item.html(title)
                     .click( () => {
                         $.post(`/api/service/set?data={"request": {"id": ${i}}}`);
                     });
@@ -16,7 +16,7 @@ window.OpenLP = {
             });
         });
     },
-    updateTextList: function(evt) {
+    updateTextList: function(newSlide) {
         $.getJSON("/api/controller/live/text").then( (data, status) => {
             this.currentSlides = data.results.slides;
             this.currentRows = [];
@@ -28,24 +28,28 @@ window.OpenLP = {
                 var rows = this.slideToRows(text);
                 rows.forEach( rowText => {
                     var row = this.currentRows.length;
+
+                    if(this.currentRow === null && this.currentSlide === i) {
+                        this.currentRow = row;
+                    }
+
                     var selected = row === this.currentRow;
                     this.currentRows.push(rowText);
 
                     if(selected) {
                         openlpChannel.postMessage(rowText);
-                        var $live = $("#live").empty().text(rowText);
+                        var $live = $("#live").empty().html(rowText);
                     }
 
                     var $row = $(`<div class="text-item${selected ? " selected" : ""}"/>`);
-                    $row.text(rowText)
+                    $row.html(rowText)
                         .click( () => {
                             this.currentRow = row;
                             if(this.currentSlide !== i) {
+                                this.currentSlide = i;
                                 $.post(`/api/controller/live/set?data={"request": {"id": ${i}}}`);
                             }
-                            else {
-                                this.updateTextList();
-                            }
+                            this.updateTextList();
                         });
 
                     $textList.append($row);            
@@ -59,13 +63,13 @@ window.OpenLP = {
         var rows = [];
 
         if(this.modeTampilan === "original"){
-            rows.push(slideText);
+            rows.push(slideText.replace("\n", "<br>"));
         }
         else if(this.modeTampilan === "2-line") {
             var lines = slideText.split("\n");
             for (var i = 0; i < lines.length; i+=2) {
                 var nextLine = lines[i+1];
-                nextLine = nextLine ? ("\n" + nextLine) : "";
+                nextLine = nextLine ? ("<br>" + nextLine) : "";
                 var row = lines[i] + nextLine;
                 rows.push(row);
             }
@@ -76,7 +80,6 @@ window.OpenLP = {
         $.getJSON("/api/poll").then( (data, status) => {
             if (this.currentItem != data.results.item ||
                 this.currentService != data.results.service) {
-
                 this.currentItem = data.results.item;
                 this.currentService = data.results.service;
                 this.currentSlide = 0;
@@ -86,6 +89,7 @@ window.OpenLP = {
                 this.updateTextList();
             } else if (this.currentSlide != data.results.slide) {
                 this.currentSlide = parseInt(data.results.slide, 10);
+                this.currentRow = null;
                 this.updateTextList();
             }
         });
